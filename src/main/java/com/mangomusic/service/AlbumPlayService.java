@@ -25,7 +25,7 @@ public class AlbumPlayService {
     }
 
     public List<AlbumPlay> getUserRecentPlays(int userId, int limit) {
-        if (limit < 1) {
+        if (limit <= 1) {
             limit = 20;
         }
         if (limit > 100) {
