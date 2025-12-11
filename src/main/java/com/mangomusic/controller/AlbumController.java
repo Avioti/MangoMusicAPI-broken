@@ -6,7 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/albums")
@@ -76,4 +78,22 @@ public class AlbumController {
         }
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{id}/play-count")
+    public ResponseEntity<Map<String, Object>> getPlayCount(@PathVariable int id) {
+        Album album = albumService.getAlbumById(id);
+        if (album == null) {
+            return ResponseEntity.notFound().build();
+        }
+        int playCount = albumService.getAlbumPlayCount(id);
+        Map<String, Object> response = new HashMap<>();
+        response.put("albumId", id);
+        response.put("albumTitle", album.getTitle());
+        response.put("artistName", album.getArtistName());
+        response.put("playCount", playCount);
+        return ResponseEntity.ok(response);
+    }
+
+
+
 }

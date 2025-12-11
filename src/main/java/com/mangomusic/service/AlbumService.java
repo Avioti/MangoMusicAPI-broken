@@ -72,6 +72,7 @@ public class AlbumService {
         return updated;
     }
 
+
     public boolean deleteAlbum(int albumId) {
         return albumDao.deleteAlbum(albumId);
     }
@@ -90,5 +91,10 @@ public class AlbumService {
                 throw new IllegalArgumentException("Release year must be between 1900 and 2100");
             }
         }
+    }
+
+
+    public int getAlbumPlayCount(int albumId) {
+        return albumDao.getAlbumPlayCount(albumId);
     }
 }
