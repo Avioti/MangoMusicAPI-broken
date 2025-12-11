@@ -172,7 +172,7 @@ public class UserDao {
     }
 
     public User updateUser(int userId, User user) {
-        String query = "UPDATE users SET username = ?, email = ?, signup_date = ?, subscription_type = ?, country = ?";
+        String query = "UPDATE users SET username = ?, email = ?, signup_date = ?, subscription_type = ?, country = ? WHERE user_id = " + userId + ";";
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
