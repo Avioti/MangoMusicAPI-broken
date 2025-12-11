@@ -15,6 +15,11 @@ import java.util.Map;
 public class AlbumController {
 
     private final AlbumService albumService;
+    private static final String RECENT_ALBUMS = "/recent";
+    private static final String ID_PATH = "/{id}";
+    private static final String ARTIST_ID_PATH = "/artist/{artistId}";
+    private static final String GENRE_PATH = "/genre/{genre}";
+    private static final String PLAY_COUNT_PATH = "/{id}/play-count";
 
     public AlbumController(AlbumService albumService) {
         this.albumService = albumService;
@@ -28,7 +33,7 @@ public class AlbumController {
         return ResponseEntity.ok(albumService.getAllAlbums());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(ID_PATH)
     public ResponseEntity<Album> getAlbumById(@PathVariable int id) {
         Album album = albumService.getAlbumById(id);
         if (album == null) {
@@ -37,12 +42,12 @@ public class AlbumController {
         return ResponseEntity.ok(album);
     }
 
-    @GetMapping("/artist/{artistId}")
+    @GetMapping(ARTIST_ID_PATH)
     public ResponseEntity<List<Album>> getAlbumsByArtist(@PathVariable int artistId) {
         return ResponseEntity.ok(albumService.getAlbumsByArtist(artistId));
     }
 
-    @GetMapping("/genre/{genre}")
+    @GetMapping(GENRE_PATH)
     public ResponseEntity<List<Album>> getAlbumsByGenre(@PathVariable String genre) {
         return ResponseEntity.ok(albumService.getAlbumsByGenre(genre));
     }
@@ -57,7 +62,7 @@ public class AlbumController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(ID_PATH)
     public ResponseEntity<Album> updateAlbum(@PathVariable int id, @RequestBody Album album) {
         try {
             Album updated = albumService.updateAlbum(id, album);
@@ -70,7 +75,7 @@ public class AlbumController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(ID_PATH)
     public ResponseEntity<Void> deleteAlbum(@PathVariable int id) {
         boolean deleted = albumService.deleteAlbum(id);
         if (!deleted) {
@@ -79,7 +84,7 @@ public class AlbumController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}/play-count")
+    @GetMapping(PLAY_COUNT_PATH)
     public ResponseEntity<Map<String, Object>> getPlayCount(@PathVariable int id) {
         Album album = albumService.getAlbumById(id);
         if (album == null) {
@@ -92,6 +97,12 @@ public class AlbumController {
         response.put("artistName", album.getArtistName());
         response.put("playCount", playCount);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(RECENT_ALBUMS)
+    public ResponseEntity<List<Album>> getRecentAlbums(
+            @RequestParam(defaultValue = "10") int limit){
+        return ResponseEntity.ok(albumService.getRecentAlbums(limit));
     }
 
 

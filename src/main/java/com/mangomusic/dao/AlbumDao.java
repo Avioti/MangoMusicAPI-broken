@@ -239,11 +239,13 @@ public class AlbumDao {
 
    public Album getTopAlbumForArtist(int artistId) {
         String query = "SELECT al.album_id, al.artist_id, al.title, al.release_year, ar.name as artist_name, " +
-                "(SELECT COUNT(*) FROM album_plays ap WHERE ap.album_id = al.album_id) AS play_count " +
+                "COUNT(ap.play_id) AS play_count " +
                 "FROM albums al " +
                 "JOIN artists ar ON al.artist_id = ar.artist_id " +
+                "JOIN album_plays ap ON al.album_id = ap.album_id " +
                 "WHERE al.artist_id = ? " +
-                "ORDER BY play_count DESC " +
+                "GROUP BY al.album_id, al.artist_id, al.title, al.release_year, ar.name " +
+                "ORDER BY play_count DESC, al.album_id ASC " +
                 "LIMIT 1";
 
         try (Connection connection = dataSource.getConnection();
@@ -264,6 +266,34 @@ public class AlbumDao {
         }
 
         return null;
+    }
+
+    public List<Album> getRecentAlbums(int limit) {
+        List<Album> albums = new ArrayList<>();
+        String query = "SELECT al.album_id, al.artist_id, al.title, al.release_year, ar.name as artist_name " +
+                "FROM albums al " +
+                "JOIN artists ar ON al.artist_id = ar.artist_id " +
+                "WHERE al.release_year >= (YEAR(CURDATE()) - 2) " +
+                "ORDER BY al.release_year DESC, al.title ASC " +
+                "LIMIT ?";
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, limit);
+
+            try (ResultSet results = statement.executeQuery()) {
+                while (results.next()) {
+                    Album album = mapRowToAlbum(results);
+                    albums.add(album);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error getting recent albums", e);
+        }
+
+        return albums;
     }
 
     private Album mapRowToAlbum(ResultSet results) throws SQLException {

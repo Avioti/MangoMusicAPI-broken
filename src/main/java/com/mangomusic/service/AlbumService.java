@@ -97,4 +97,15 @@ public class AlbumService {
     public int getAlbumPlayCount(int albumId) {
         return albumDao.getAlbumPlayCount(albumId);
     }
+
+    public List<Album> getRecentAlbums(int limit) {
+        if (limit > 100) {
+            limit = 100;
+        }
+
+        if(limit <= 0) {
+            limit = 10;
+        }
+        return albumDao.getRecentAlbums(limit);
+    }
 }
