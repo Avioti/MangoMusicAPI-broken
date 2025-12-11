@@ -7,16 +7,18 @@ public class Album {
     private String title;
     private Integer releaseYear;  // Changed from int
     private String artistName;
+    private Integer playCount;
 
     public Album() {
     }
 
-    public Album(Integer albumId, Integer artistId, String title, Integer releaseYear, String artistName) {
+    public Album(Integer albumId, Integer artistId, String title, Integer releaseYear, String artistName, Integer playCount) {
         this.albumId = albumId;
         this.artistId = artistId;
         this.title = title;
         this.releaseYear = releaseYear;
         this.artistName = artistName;
+        this.playCount = playCount;
     }
 
     public Integer getAlbumId() {
@@ -59,6 +61,14 @@ public class Album {
         this.artistName = artistName;
     }
 
+    public Integer getPlayCount() {
+        return playCount;
+    }
+
+    public void setPlayCount(Integer playCount) {
+        this.playCount = playCount;
+    }
+
     @Override
     public String toString() {
         return "Album{" +
@@ -67,6 +77,7 @@ public class Album {
                 ", title='" + title + '\'' +
                 ", releaseYear=" + releaseYear +
                 ", artistName='" + artistName + '\'' +
+                ", playCount=" + playCount +
                 '}';
     }
 }
